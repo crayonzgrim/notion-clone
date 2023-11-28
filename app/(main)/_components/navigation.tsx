@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils';
 import { ChevronsLeft, MenuIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { ElementRef, useRef, useState } from 'react';
+import { ElementRef, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 
 export default function Navigation() {
@@ -82,6 +82,20 @@ export default function Navigation() {
       setTimeout(() => setIsResetting(false), 300);
     }
   };
+
+  useEffect(() => {
+    if (isMobile) {
+      handleCollapse();
+    } else {
+      handleResetWidth();
+    }
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (isMobile) {
+      handleCollapse();
+    }
+  }, [pathName, isMobile]);
 
   return (
     <>
