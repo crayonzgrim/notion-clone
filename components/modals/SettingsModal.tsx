@@ -5,7 +5,7 @@ import { useSettings } from '@/hooks/use-settings';
 import { Label } from '@/components/ui/label';
 import { ModeToggle } from '@/components/mode-toggle';
 
-export const SettingsModal = () => {
+export default function SettingsModal() {
   const settings = useSettings();
 
   return (
@@ -26,4 +26,4 @@ export const SettingsModal = () => {
       </DialogContent>
     </Dialog>
   );
-};
+}
