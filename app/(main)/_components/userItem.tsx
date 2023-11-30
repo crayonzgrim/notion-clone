@@ -6,9 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  Separator
+  DropdownMenuTrigger
 } from '@radix-ui/react-dropdown-menu';
 import { ChevronsLeftRight } from 'lucide-react';
 
