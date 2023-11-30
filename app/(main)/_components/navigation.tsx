@@ -22,8 +22,10 @@ import DocumentList from './DocumentList';
 import { Popover } from '@/components/ui/popover';
 import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import TrashBox from './TrashBox';
+import { useSearch } from '@/hooks/use-search';
 
 export default function Navigation() {
+  const search = useSearch();
   const pathName = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
@@ -153,7 +155,7 @@ export default function Navigation() {
             label="Search"
             icon={Search}
             isSearch
-            handleOnClick={() => {}}
+            handleOnClick={search.onOpen}
           />
           <Item label="Settings" icon={Settings} handleOnClick={() => {}} />
           <Item
