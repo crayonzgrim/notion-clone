@@ -24,7 +24,7 @@ import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import TrashBox from './TrashBox';
 import { useSearch } from '@/hooks/use-search';
 import { useSettings } from '@/hooks/use-settings';
-import { Navbar } from './Navbar';
+import Navbar from './Navbar';
 
 export default function Navigation() {
   const search = useSearch();

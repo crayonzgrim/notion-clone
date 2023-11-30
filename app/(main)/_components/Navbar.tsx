@@ -6,14 +6,17 @@ import { MenuIcon } from 'lucide-react';
 
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
-import { Title } from './Title';
+
+import Title from './Title';
+import Menu from './Menu';
+import Banner from './Banner';
 
 interface NavbarProps {
   isCollapsed: boolean;
   onResetWidth: () => void;
 }
 
-export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
+export default function Navbar({ isCollapsed, onResetWidth }: NavbarProps) {
   const params = useParams();
 
   const document = useQuery(api.documents.getById, {
@@ -22,10 +25,10 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
 
   if (document === undefined) {
     return (
-      <nav className="bg-background dark:bg-[#1f1f1f] px-3 py-2 w-full flex items-center justify-between">
+      <nav className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center justify-between">
         <Title.Skeleton />
         <div className="flex items-center gap-x-2">
-          {/* <Menu.Skeleton /> */}
+          <Menu.Skeleton />
         </div>
       </nav>
     );
@@ -49,14 +52,11 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
           <Title initialData={document} />
           <div className="flex items-center gap-x-2">
             {/* <Publish initialData={document} /> */}
-            {/* <Menu documentId={document._id} /> */}
+            <Menu documentId={document._id} />
           </div>
         </div>
       </nav>
-      {document.isArchived &&
-        {
-          /* <Banner documentId={document._id} /> */
-        }}
+      {document.isArchived && <Banner documentId={document._id} />}
     </>
   );
-};
+}

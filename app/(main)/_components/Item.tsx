@@ -1,18 +1,5 @@
 'use client';
 
-import { DropdownMenu } from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
-import { api } from '@/convex/_generated/api';
-import { Id } from '@/convex/_generated/dataModel';
-import { cn } from '@/lib/utils';
-import { useUser } from '@clerk/clerk-react';
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@radix-ui/react-dropdown-menu';
-import { useMutation } from 'convex/react';
 import {
   ChevronDown,
   ChevronRight,
@@ -21,8 +8,22 @@ import {
   Plus,
   Trash
 } from 'lucide-react';
+import { useMutation } from 'convex/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useUser } from '@clerk/clerk-react';
+
+import { Id } from '@/convex/_generated/dataModel';
+import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
+import { api } from '@/convex/_generated/api';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
 
 interface ItemProps {
   id?: Id<'documents'>;
@@ -49,51 +50,14 @@ export default function Item({
   onExpand,
   expanded
 }: ItemProps) {
-  const router = useRouter();
-
   const { user } = useUser();
-
+  const router = useRouter();
   const create = useMutation(api.documents.create);
   const archive = useMutation(api.documents.archive);
 
-  const ChevronIcon = expanded ? ChevronDown : ChevronRight;
-
-  const handleExpand = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
+  const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
-    onExpand?.();
-  };
-
-  const handleOnCreate = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    event.stopPropagation();
-
     if (!id) return;
-
-    const promise = create({ title: 'Untitled', parentDocument: id }).then(
-      (documentId) => {
-        if (!expanded) {
-          onExpand?.();
-        }
-
-        // router.push(`/documents/${documentId}`);
-
-        toast.promise(promise, {
-          loading: 'Create a new note...',
-          success: 'New note created',
-          error: 'Failed to create a new note'
-        });
-      }
-    );
-  };
-
-  const handleOnArchive = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    event.stopPropagation();
-
-    if (!id) return;
-
     const promise = archive({ id }).then(() => router.push('/documents'));
 
     toast.promise(promise, {
@@ -103,11 +67,41 @@ export default function Item({
     });
   };
 
+  const handleExpand = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    event.stopPropagation();
+    onExpand?.();
+  };
+
+  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    if (!id) return;
+    const promise = create({ title: 'Untitled', parentDocument: id }).then(
+      (documentId) => {
+        if (!expanded) {
+          onExpand?.();
+        }
+        router.push(`/documents/${documentId}`);
+      }
+    );
+
+    toast.promise(promise, {
+      loading: 'Creating a new note...',
+      success: 'New note created!',
+      error: 'Failed to create a new note.'
+    });
+  };
+
+  const ChevronIcon = expanded ? ChevronDown : ChevronRight;
+
   return (
     <div
       onClick={handleOnClick}
       role="button"
-      style={{ paddingLeft: level ? `${level * 12 + 12}px` : '12px' }}
+      style={{
+        paddingLeft: level ? `${level * 12 + 12}px` : '12px'
+      }}
       className={cn(
         'group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium',
         active && 'bg-primary/5 text-primary'
@@ -122,22 +116,21 @@ export default function Item({
           <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
         </div>
       )}
-
       {documentIcon ? (
         <div className="shrink-0 mr-2 text-[18px]">{documentIcon}</div>
       ) : (
-        <Icon className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
+        <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground" />
       )}
       <span className="truncate">{label}</span>
       {isSearch && (
         <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-xs">⌘</span>P
+          <span className="text-xs">⌘</span>K
         </kbd>
       )}
       {!!id && (
         <div className="ml-auto flex items-center gap-x-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} asChild>
               <div
                 role="button"
                 className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
@@ -146,27 +139,24 @@ export default function Item({
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-60 bg-white rounded-md z-[999]"
+              className="w-60"
               align="start"
               side="right"
-              // forceMount
+              forceMount
             >
-              <DropdownMenuItem
-                onClick={handleOnArchive}
-                className="flex text-black dark:text-white p-3 hover:border-none hover:bg-neutral-100 dark:hover:bg-neutral-600"
-              >
+              <DropdownMenuItem onClick={onArchive}>
                 <Trash className="h-4 w-4 mr-2" />
                 Delete
               </DropdownMenuItem>
-              <hr />
-              <div className="text-xs text-muted-foreground p-3 cursor-default	">
+              <DropdownMenuSeparator />
+              <div className="text-xs text-muted-foreground p-2">
                 Last edited by: {user?.fullName}
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
           <div
             role="button"
-            onClick={handleOnCreate}
+            onClick={onCreate}
             className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
           >
             <Plus className="h-4 w-4 text-muted-foreground" />
@@ -180,7 +170,9 @@ export default function Item({
 Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
   return (
     <div
-      style={{ paddingLeft: level ? `${level * 12 + 25}px` : '12px' }}
+      style={{
+        paddingLeft: level ? `${level * 12 + 25}px` : '12px'
+      }}
       className="flex gap-x-2 py-[3px]"
     >
       <Skeleton className="h-4 w-4" />

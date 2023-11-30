@@ -13,7 +13,7 @@ interface TitleProps {
   initialData: Doc<'documents'>;
 }
 
-export const Title = ({ initialData }: TitleProps) => {
+export default function Title({ initialData }: TitleProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const update = useMutation(api.documents.update);
 
@@ -74,7 +74,7 @@ export const Title = ({ initialData }: TitleProps) => {
       )}
     </div>
   );
-};
+}
 
 Title.Skeleton = function TitleSkeleton() {
   return <Skeleton className="h-9 w-20 rounded-md" />;
