@@ -14,7 +14,7 @@ import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import UserItem from './userItem';
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import Item from './Item';
 import { toast } from 'sonner';
@@ -23,13 +23,15 @@ import { Popover } from '@/components/ui/popover';
 import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import TrashBox from './TrashBox';
 import { useSearch } from '@/hooks/use-search';
+import { useSettings } from '@/hooks/use-settings';
 
 export default function Navigation() {
   const search = useSearch();
+  const settings = useSettings();
+
   const pathName = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
-  // const documents = useQuery(api.documents.get);
   const create = useMutation(api.documents.create);
 
   const isResizingRef = useRef(false);
@@ -157,7 +159,11 @@ export default function Navigation() {
             isSearch
             handleOnClick={search.onOpen}
           />
-          <Item label="Settings" icon={Settings} handleOnClick={() => {}} />
+          <Item
+            label="Settings"
+            icon={Settings}
+            handleOnClick={settings.onOpen}
+          />
           <Item
             handleOnClick={handleCreate}
             label="New page"

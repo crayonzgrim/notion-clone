@@ -67,7 +67,7 @@ export default function Trashbox() {
   }
 
   return (
-    <div className="text-sm bg-white">
+    <div className="text-sm bg-white dark:bg-black rounded-md">
       <div className="flex items-center gap-x-1 p-2">
         <Search className="h-4 w-4" />
         <Input
@@ -93,14 +93,14 @@ export default function Trashbox() {
               <div
                 onClick={(e) => onRestore(e, document._id)}
                 role="button"
-                className="rounded-sm p-2 hover:bg-neutral-200"
+                className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
               >
                 <Undo className="h-4 w-4 text-muted-foreground" />
               </div>
               <ConfirmModal onConfirm={() => onRemove(document._id)}>
                 <div
                   role="button"
-                  className="rounded-sm p-2 hover:bg-neutral-200"
+                  className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
                 >
                   <Trash className="h-4- w-4 text-muted-foreground" />
                 </div>
