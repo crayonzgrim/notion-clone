@@ -82,6 +82,7 @@ export default function Item({
         if (!expanded) {
           onExpand?.();
         }
+
         router.push(`/documents/${documentId}`);
       }
     );

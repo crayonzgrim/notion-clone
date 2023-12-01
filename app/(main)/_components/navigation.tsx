@@ -30,6 +30,7 @@ export default function Navigation() {
   const search = useSearch();
   const settings = useSettings();
 
+  const router = useRouter();
   const params = useParams();
   const pathName = usePathname();
 
@@ -124,7 +125,9 @@ export default function Navigation() {
   }, [pathName, isMobile]);
 
   const handleCreate = () => {
-    const promise = create({ title: 'Untitled' });
+    const promise = create({ title: 'Untitled' }).then((documentId) =>
+      router.push(`/documents/${documentId}`)
+    );
 
     toast.promise(promise, {
       loading: 'Create a new note...',
